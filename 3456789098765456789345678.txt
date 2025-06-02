@@ -1,0 +1,184 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const startScreen = document.getElementById('start-screen');
+    const gameScreen = document.getElementById('game-screen');
+    const resultScreen = document.getElementById('result-screen');
+    const startGameBtn = document.getElementById('start-game');
+    const playAgainBtn = document.getElementById('play-again');
+    const player1Input = document.getElementById('player1');
+    const player2Input = document.getElementById('player2');
+    const currentPlayerText = document.getElementById('current-player');
+    const scoreBtn = document.getElementById('score');
+    const missBtn = document.getElementById('miss');
+    const winnerAnnouncement = document.getElementById('winner-announcement');
+
+    // إعداد نظام الصوت
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playGoalSound() {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // نوتة A4
+        oscillator.frequency.setValueAtTime(880, audioContext.currentTime + 0.2); // نوتة A5
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.5);
+    }
+
+    function playMissSound() {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.type = 'square';
+        oscillator.frequency.setValueAtTime(220, audioContext.currentTime); // نوتة A3
+        oscillator.frequency.setValueAtTime(110, audioContext.currentTime + 0.2); // نوتة A2
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.3);
+    }
+
+    function playWinnerSound() {
+        const notes = [440, 554.37, 659.25, 880]; // A4, C#5, E5, A5
+        notes.forEach((note, index) => {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(note, audioContext.currentTime + index * 0.2);
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime + index * 0.2);
+            gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + index * 0.2 + 0.1);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + index * 0.2 + 0.3);
+            
+            oscillator.start(audioContext.currentTime + index * 0.2);
+            oscillator.stop(audioContext.currentTime + index * 0.2 + 0.3);
+        });
+    }
+
+    let player1Name = '';
+    let player2Name = '';
+    let currentPlayer = 1;
+    let currentKick = 0;
+    let player1Score = 0;
+    let player2Score = 0;
+
+    function resetGame() {
+        player1Score = 0;
+        player2Score = 0;
+        currentPlayer = 1;
+        currentKick = 0;
+        
+        document.querySelectorAll('.circle').forEach(circle => {
+            circle.classList.remove('success', 'danger');
+        });
+
+        resultScreen.classList.add('hidden');
+        startScreen.classList.remove('hidden');
+        
+        document.querySelector('.confetti').innerHTML = '';
+        
+        player1Input.value = '';
+        player2Input.value = '';
+    }
+
+    startGameBtn.addEventListener('click', () => {
+        if (player1Input.value && player2Input.value) {
+            player1Name = player1Input.value;
+            player2Name = player2Input.value;
+            document.getElementById('player1-name').textContent = player1Name;
+            document.getElementById('player2-name').textContent = player2Name;
+            startScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            updateCurrentPlayer();
+        }
+    });
+
+    function updateCurrentPlayer() {
+        currentPlayerText.textContent = `التسديدة لـ ${currentPlayer === 1 ? player1Name : player2Name}`;
+    }
+
+    function handleKick(success) {
+        const playerCircles = document.getElementById(`player${currentPlayer}-circles`);
+        const currentCircle = playerCircles.children[currentKick];
+        
+        if (success) {
+            currentCircle.classList.add('success');
+            if (currentPlayer === 1) player1Score++;
+            else player2Score++;
+            playGoalSound();
+        } else {
+            currentCircle.classList.add('danger');
+            playMissSound();
+        }
+
+        if (currentPlayer === 1) {
+            currentPlayer = 2;
+        } else {
+            currentPlayer = 1;
+            currentKick++;
+        }
+
+        if (currentKick < 5) {
+            updateCurrentPlayer();
+        } else {
+            showResult();
+        }
+    }
+
+    scoreBtn.addEventListener('click', () => handleKick(true));
+    missBtn.addEventListener('click', () => handleKick(false));
+    playAgainBtn.addEventListener('click', resetGame);
+
+    function createConfetti() {
+        const confettiContainer = document.querySelector('.confetti');
+        confettiContainer.innerHTML = '';
+        
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.style.cssText = `
+                position: absolute;
+                width: 10px;
+                height: 10px;
+                background: ${['#ff4b2b', '#ffd700', '#2ecc71', '#3498db', '#e74c3c', '#9b59b6'][Math.floor(Math.random() * 6)]};
+                left: ${Math.random() * 100}%;
+                animation: confetti-fall ${Math.random() * 3 + 2}s linear infinite;
+                animation-delay: -${Math.random() * 2}s;
+                transform: rotate(${Math.random() * 360}deg);
+            `;
+            confettiContainer.appendChild(confetti);
+        }
+    }
+
+    function showResult() {
+        gameScreen.classList.add('hidden');
+        resultScreen.classList.remove('hidden');
+        
+        setTimeout(() => {
+            playWinnerSound();
+            if (player1Score > player2Score) {
+                winnerAnnouncement.textContent = `🎉 الفائز هو ${player1Name} 🎉`;
+            } else if (player2Score > player1Score) {
+                winnerAnnouncement.textContent = `🎉 الفائز هو ${player2Name} 🎉`;
+            } else {
+                winnerAnnouncement.textContent = '🤝 تعادل 🤝';
+            }
+            createConfetti();
+        }, 1000);
+    }
+});

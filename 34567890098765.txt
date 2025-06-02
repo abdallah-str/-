@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Cairo', sans-serif;
+}
+
+body {
+    background: linear-gradient(to bottom, #ff4b2b, #ffd700);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    direction: rtl;
+}
+
+.screen {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 90%;
+    max-width: 600px;
+    backdrop-filter: blur(8px);
+}
+
+.hidden {
+    display: none;
+}
+
+h1, h2 {
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.player-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+input {
+    padding: 0.8rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    width: 100%;
+    margin-top: 0.5rem;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+#start-game {
+    background: #3498db;
+    color: white;
+    margin-top: 1rem;
+    font-weight: bold;
+}
+
+.penalties-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.circles {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.circle {
+    width: 35px;
+    height: 35px;
+    border: 3px solid #ddd;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.circle.success {
+    background-color: #2ecc71;
+    border-color: #27ae60;
+    transform: scale(1.1);
+}
+
+.circle.danger {
+    background-color: #e74c3c;
+    border-color: #c0392b;
+    transform: scale(1.1);
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.success {
+    background: #2ecc71;
+    color: white;
+}
+
+.danger {
+    background: #e74c3c;
+    color: white;
+}
+
+#winner-announcement {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin: 2rem 0;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.confetti {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+    }
+}
+
+#play-again {
+    margin-top: 2rem;
+    background: #3498db;
+    color: white;
+    font-weight: bold;
+}

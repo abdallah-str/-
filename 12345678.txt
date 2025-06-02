@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة ضربات الجزاء</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="start-screen" class="screen">
+        <h1>لعبة ضربات الجزاء</h1>
+        <div class="player-inputs">
+            <div>
+                <label for="player1">اللاعب الأول:</label>
+                <input type="text" id="player1" required>
+            </div>
+            <div>
+                <label for="player2">اللاعب الثاني:</label>
+                <input type="text" id="player2" required>
+            </div>
+            <button id="start-game">ابدأ اللعبة</button>
+        </div>
+    </div>
+
+    <div id="game-screen" class="screen hidden">
+        <h2 id="current-player"></h2>
+        <div class="penalties-container">
+            <div class="player-penalties">
+                <h3 id="player1-name"></h3>
+                <div class="circles" id="player1-circles">
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                </div>
+            </div>
+            <div class="player-penalties">
+                <h3 id="player2-name"></h3>
+                <div class="circles" id="player2-circles">
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+        <div class="actions">
+            <button id="score" class="success">سدد ✓</button>
+            <button id="miss" class="danger">لم يسدد ✗</button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="screen hidden">
+        <div class="confetti"></div>
+        <h2>النتيجة النهائية</h2>
+        <div id="winner-announcement"></div>
+        <button id="play-again" class="success">العب مرة أخرى</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
